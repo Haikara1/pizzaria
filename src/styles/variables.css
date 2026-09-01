@@ -1,0 +1,2 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+:root{--color-background:#f3f0e9;--color-background-dark:#181714;--color-text:#171715;--color-text-light:#f5f3ee;--color-muted:#77736b;--color-border:rgba(23,23,21,.15);--color-primary:#932d20;--color-secondary:#304233;--color-accent:#d59a53;--font-display:'Instrument Serif',Georgia,serif;--font-body:'DM Sans',Arial,sans-serif;--container:1400px;--space-section:clamp(5rem,10vw,10rem);--radius-sm:3px;--transition:.4s cubic-bezier(.2,.7,.2,1)}
