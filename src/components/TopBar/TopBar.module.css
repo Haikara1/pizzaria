@@ -1,0 +1,11 @@
+.bar { padding: 9px 16px; background: var(--color-primary); text-align: center; font-size: .75rem; font-weight: 700; line-height: 1.5; }
+.open { color: #9aefac; }
+.closed { color: #ffb3b3; }
+.message { display: inline-block; animation: statusPulse 2.8s ease-in-out infinite; }
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: .7; transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .message { animation: none; }
+}

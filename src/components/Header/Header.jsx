@@ -1,4 +1,35 @@
-import { useEffect,useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import BrandLogo from '../BrandLogo/BrandLogo'
+import { navigation, orderUrl } from '../../data/site'
 import styles from './Header.module.css'
-const links=[['A casa','#a-casa'],['Cardápio','#cardapio'],['Galeria','#galeria'],['Contato','#contato']]
-export default function Header(){const[scrolled,setScrolled]=useState(false);const[open,setOpen]=useState(false);useEffect(()=>{const onScroll=()=>setScrolled(scrollY>40);onScroll();addEventListener('scroll',onScroll,{passive:true});return()=>removeEventListener('scroll',onScroll)},[]);useEffect(()=>{document.body.classList.toggle('menu-open',open);return()=>document.body.classList.remove('menu-open')},[open]);return <header className={`${styles.header} ${scrolled?styles.scrolled:''} ${open?styles.open:''}`}><div className={styles.inner}><a className={styles.logo} href="#inicio" onClick={()=>setOpen(false)}>PIZZA <span>QUADRADA</span></a><nav className={styles.nav} aria-label="Navegação principal">{links.map(([label,href])=><a key={href} href={href} onClick={()=>setOpen(false)}>{label}</a>)}</nav><a className={styles.order} href="#pedir">Pedir</a><button className={styles.toggle} onClick={()=>setOpen(!open)} aria-label={open?'Fechar menu':'Abrir menu'} aria-expanded={open}><span/><span/></button></div></header>}
+export default function Header() {
+ const [open,setOpen] = useState(false)
+ const toggle = useRef(null), header = useRef(null)
+ useEffect(() => {
+  if (!open) return
+  document.body.classList.add('menu-open')
+  const onKey = event => {
+   if(event.key === 'Escape'){setOpen(false);toggle.current.focus()}
+   if(event.key === 'Tab'){
+    const items=[...header.current.querySelectorAll('a,button')].filter(el=>el.getClientRects().length)
+    const first=items[0],last=items[items.length-1]
+    if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus()}
+    else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus()}
+   }
+  }
+  const desktop=matchMedia('(min-width:1024px)')
+  const closeOnDesktop=()=>{if(desktop.matches)setOpen(false)}
+  desktop.addEventListener('change',closeOnDesktop)
+  document.addEventListener('keydown',onKey)
+  return ()=>{document.body.classList.remove('menu-open');document.removeEventListener('keydown',onKey);desktop.removeEventListener('change',closeOnDesktop)}
+ },[open])
+ return <header ref={header} className={styles.header}><div className={`container ${styles.inner}`}>
+  <a href="#inicio" aria-label="Pizza Quadrada — início" className={styles.brand} onClick={()=>setOpen(false)}><BrandLogo /></a>
+  <nav id="main-navigation" className={`${styles.nav} ${open?styles.open:''}`} aria-label="Navegação principal">
+   {navigation.map(([label,href])=><a key={href} href={href} onClick={()=>setOpen(false)}>{label}</a>)}
+   <a className={`button button-accent ${styles.mobileOrder}`} href={orderUrl} target="_blank" rel="noopener noreferrer" onClick={()=>setOpen(false)}>Pedir agora →</a>
+  </nav>
+  <a className={`button button-accent ${styles.order}`} href={orderUrl} target="_blank" rel="noopener noreferrer">Pedir agora <span aria-hidden="true">↗</span></a>
+  <button ref={toggle} className={styles.toggle} onClick={()=>setOpen(!open)} aria-label={open?'Fechar menu':'Abrir menu'} aria-expanded={open} aria-controls="main-navigation"><span>{open?'✕':'☰'}</span></button>
+ </div></header>
+}
